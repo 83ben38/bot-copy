@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='js/marked.min.js') }}"></script>
+</head>
+<body>
+    <nav>
+        <h1>RAG Dashboard</h1>
+    </nav>
+    <div class="panel">
+        <div id="chatbot">
+        <h2>Chatbot</h2>
+        <div id="chatbox" class="chatbox"></div>
+        <div id="typingIndicator" class="message bot-message" style="display: none;">Bot is typing...</div>
+        <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+        <button onclick="resetChat()">Reset Chat</button>
+        </div>
+        <div id="popup" hidden="true">
+            <h2>Explanation</h2>
+            <div id="explanation" class="explanation"></div>
+        </div>
+        <div class="score-container">
+            <div>
+                <div class="score-header"><button onclick="showDescription(0)">Compassion</button></div>
+                <div class="circular-progress" id="chatbot-score1">
+                    <div class="inner-circle"></div>
+                    <p class="percentage">0%</p>
+                </div>
+            </div>
+            <div>
+                <div class="score-header"><button onclick="showDescription(1)">Accuracy</button></div>
+                <div class="circular-progress" id="chatbot-score2">
+                    <div class="inner-circle"></div>
+                    <p class="percentage">0%</p>
+                </div>
+            </div>
+            <div>
+                <div class="score-header"><button onclick="showDescription(2)">Relevancy</button></div>
+                <div class="circular-progress" id="chatbot-score3">
+                    <div class="inner-circle"></div>
+                    <p class="percentage">0%</p>
+                </div>
+            </div>
+            <div>
+                <div class="score-header"><button onclick="showDescription(3)">Simplicity</button></div>
+                <div class="circular-progress" id="chatbot-score4">
+                    <div class="inner-circle"></div>
+                    <p class="percentage">0%</p>
+                </div>
+            </div>
+        </div>
+        <h2>Controls</h2>
+        <button onclick="buttonClick(1)">Button 1</button>
+        <button onclick="buttonClick(2)">Button 2</button>
+        <button onclick="buttonClick(3)">Button 3</button>
+    </div>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>

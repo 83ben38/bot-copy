@@ -1,0 +1,115 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+nav {
+    background-color: #45a09d;
+    color: white;
+    padding: 1em;
+    text-align: center;
+}
+
+h1 {
+    margin: 0;
+}
+
+.panel {
+    padding: 1em;
+    margin: 1em;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+#chatbox, #explanation {
+    border: 1px solid #ddd;
+    padding: 1em;
+    height: 500px; /* Increased height */
+    overflow-y: auto;
+    margin-bottom: 1em;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+input[type="text"] {
+    width: calc(100% - 60px);
+    padding: 0.5em;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+button {
+    padding: 0.5em 1em;
+    border: none;
+    background-color: #45a09d;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+.circular-progress {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin: 1em;
+}
+
+.inner-circle {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: lightgrey;
+}
+
+.percentage {
+    position: relative;
+    font-size: 20px;
+    color: rgb(0, 0, 0, 0.8);
+}
+
+.score-container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.score-header {
+    text-align: center;
+    margin-bottom: 0.5em;
+}
+
+.message {
+    padding: 0.5em;
+    margin: 0.5em 0;
+    border-radius: 4px;
+}
+
+.user-message {
+    background-color: #d1e7dd;
+    align-self: flex-end;
+    text-align: right;
+}
+
+.bot-message {
+    background-color: #f8d7da;
+    align-self: flex-start;
+    text-align: left;
+}
