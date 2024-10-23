@@ -79,7 +79,7 @@ def keyword():
     return jsonify({'keywords': keywords})
 
 def process_keywords(message):
-    constitution = "Your job is to extract keywords from a users prompt that will be used to search in a rag database for. You are to only output the keywords in a list that looks like this: word1, word2, word3, etc. Do not output anything else, as it will break the code running behind you, and you will get in trouble"
+    constitution = "Your job is to create a query that will search a database for data. You are to output sections of text that you think might be in data that contains the answer to the users question. Do not output anything else, as it will break the code running behind you, and you will get in trouble"
     response_message = get_chatgpt_response(message, "", constitution, "no data")
     vector_result = get_vector_reponse(response_message)
     return vector_result
