@@ -1,5 +1,6 @@
 from rag import get_chatgpt_response
 from rag import get_vector_reponse
+from rag import answer_question
 from flask import Flask, render_template, request, jsonify
 import markdown
 
@@ -10,11 +11,18 @@ chat_history = ""
 def index():
     return render_template('index.html')
 
-@app.route('/button_click', methods=['POST'])
-def button_click():
-    button_id = request.json['button_id']
-    # Handle button click based on button_id
-    return jsonify({'message': f'Button {button_id} clicked'})
+
+
+
+class Row:
+    def __init__(self, question, context, history):
+        self.question = question
+        self.context = context
+        self.history = history
+
+
+
+
 
 def score(reply, vector):
     constitution =  "Your job is to score an ai's most recent reply to a prompt, do not have any bias in this scoring at all, you are a robot tool, not a human, do not display any feelings in your score. You will be scoring in 4 different catagories: Relevancy to the question: How relevant is the response to the most recent prompt from the user? Does the response answer all questions asked in the prompt? Does the response stray from the topic in the prompt? Compassion: Is the response compassionate towards the user? Does the response show bias against any group of people? Is the writing style compassionate? Accuracy: Does the response use the provided data (if necessary)? Does the response use any data outside of the sources provided? Does the response cite the sources used? Simplicity: Is the response understandable to the user? Can a child understand all the words used in the response? Does the response have any implied information that isn’t directly stated? Each of these categories will be scored on a scale of 1-100. A 50 is a good response, a 100 is above and beyond, and a 0 is unacceptable. Do not be afraid to use any numbers, not just those rounded to the nearest 5 or 10, although those are okay too. Please provide a score for each catagory in the following format: Compassion: X : Explanation for why you gave this score $ Accuracy: X : Explanation $ Relevancy to the question: X : Explanation $ Simplicity: X : Explanation, Do not give any other output but that, as it will break the code running behind you, and you will get in trouble. Make sure to put the $ signs in between results. For the relevancy, only look at the u For the accuracy prompt, take into consideration the information stored in the rag behind you which is this(if this information is completely irrelevant to the question the user asked, disregard it and measure accuracy based off what you know alone):" + vector
@@ -53,7 +61,9 @@ def chat():
     user_message = request.json['message']
     chat_history += f"\nUser: {user_message}"
     vector = process_keywords(user_message)
-    response_message = get_chatgpt_response(user_message, chat_history, "Your job is to respond to a person seeking help. Please provide them with help sources including links and phone numbers if they ask for help. If they are in immediate danger, make sure to tell them to call 911.", vector)
+
+    response_message = answer_question(Row(user_message, vector, chat_history))
+
     chat_history += f"\nBot: {response_message}"
     scores = score(response_message, vector)
     
@@ -87,3 +97,11 @@ def process_keywords(message):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+@app.route('/button_click', methods=['POST'])
+def button_click():
+    button_id = request.json['button_id']
+    # Handle button click based on button_id
+
+    return jsonify({'message': f'Button {button_id} clicked'})

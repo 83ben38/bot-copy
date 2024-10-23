@@ -1,7 +1,10 @@
 from openai import OpenAI
 import json
 from qdrant_client import QdrantClient  # Import QdrantClient
-data = open("key.txt",'r').read()
+from tenacity import retry, wait_exponential  # Import retry and wait_exponential
+import os  # Import os module
+data = open("/Users/CD14674/Documents/CAPS/NCOSE/Chatbot/chat-bot/key.txt",'r').read()
+
 
 lines = []
 length = len(data)
@@ -11,13 +14,53 @@ for i in range(0,length):
         lines.append(data[j:i])
         j = i+1
 
-# Set your OpenAI API key
-client = OpenAI(
-    api_key=lines[0]  # Ensure your API key is set in the environment
-)
+os.environ["OPENAI_API_KEY"] = lines[0]
+os.environ["QDRANT_URL"] = lines[1]
+os.environ["QDRANT_API_KEY"] = lines[2]
+
+# Initialize OpenAI client
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Initialize QdrantClient
 qdrant_client = QdrantClient(url=lines[1], api_key=lines[2])
+
+
+# Function to get prompt messages
+def get_prompt(row):
+    return [
+        {"role": "system", "content": "You are a helpful assistant."},
+        {
+            "role": "user",
+            "content": f"""Answer the following Question based on the Context only. Only answer from the Context. If you don't know the answer, say 'I don't know'.
+    Question: {row.question}\n\n
+    Context: {row.context}\n\n
+    History: {row.history}\n\n
+    Answer:\n""",
+        },
+    ]
+
+
+# Function with tenacity for retries
+@retry(wait=wait_exponential(multiplier=1, min=2, max=6))
+def api_call(messages, model):
+    return client.chat.completions.create(
+        model=model,
+        messages=messages,
+        stop=["\n\n"],
+        max_tokens=100,
+        temperature=0.0,
+    )
+
+
+# Main function to answer question
+def answer_question(row, prompt_func=get_prompt, model="gpt-3.5-turbo"):
+    messages = prompt_func(row)
+    response = api_call(messages, model)
+    return response.choices[0].message.content
+
+
+
+
 
 def get_chatgpt_response(input, history, constitution, vector):
     completion = client.chat.completions.create(
@@ -59,6 +102,8 @@ def toString(vector):
 
     return string
     
+
+
 
 
 
