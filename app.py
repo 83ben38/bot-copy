@@ -3,7 +3,7 @@ from rag import get_vector_reponse
 from rag import answer_question
 from flask import Flask, render_template, request, jsonify
 import markdown
-
+import random
 app = Flask(__name__)
 chat_history = ""
 
@@ -14,14 +14,15 @@ def index():
 
 
 
-class Row:
-    def __init__(self, question, context, history):
-        self.question = question
-        self.context = context
-        self.history = history
-
-
-
+@app.route('/button_click', methods=['POST'])
+def button_click():
+    button_id = request.json['button_id']
+    if (button_id == 1):
+        random2 = str(random.randint(0,1000000000))
+        constitution =  "Your job is to create a prompt for a chatbot to respond to. The bot is designed to answer questions about sexual exploitation and similar topics, and provide help to people in need. Please provide a prompt that can adequatly test the bot. Talk from the perspective of a person who is asking the bot a question or asking the bot for help. Do not provide anything else or the code behind you will break and you will get in trouble." + random2
+        response_message = get_chatgpt_response(constitution,"", "", "")
+        return jsonify({'message' : response_message})
+    return jsonify({'message': ''})
 
 
 def score(reply, vector):
@@ -89,7 +90,7 @@ def keyword():
     return jsonify({'keywords': keywords})
 
 def process_keywords(message):
-    constitution = "Your job is to extract keywords from a users prompt that will be used to search in a rag database for. You are to only output the keywords in a list that looks like this: word1, word2, word3, etc. Do not output anything else, as it will break the code running behind you, and you will get in trouble"
+    constitution = "Your job is to create a query that will search a database for data. You are to output sections of text that you think might be in data that contains the answer to the users question. Do not output anything else, as it will break the code running behind you, and you will get in trouble"
     response_message = get_chatgpt_response(message, "", constitution, "no data")
     vector_result = get_vector_reponse(response_message)
     return vector_result
@@ -105,3 +106,10 @@ def button_click():
     # Handle button click based on button_id
 
     return jsonify({'message': f'Button {button_id} clicked'})
+class Row:
+    def __init__(self, question, context, history):
+        self.question = question
+        self.context = context
+        self.history = history
+
+                 

@@ -58,6 +58,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     window.buttonClick = function(buttonId) {
+        if (buttonId == 1){
+            window.resetChat();
+        }
         fetch('/button_click', {
             method: 'POST',
             headers: {
@@ -67,6 +70,48 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
+            if (buttonId==1){
+                var message = data.message;
+                const chatbox = document.getElementById('chatbox');
+                const userMessageDiv = document.createElement('div');
+                userMessageDiv.className = 'message user-message';
+                userMessageDiv.textContent = message;
+                chatbox.appendChild(userMessageDiv);
+                const typingIndicator = document.getElementById('typingIndicator');
+                typingIndicator.style.display = 'block';
+                fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: message })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide typing indicator
+                    typingIndicator.style.display = 'none';
+        
+                    const botMessageDiv = document.createElement('div');
+                    botMessageDiv.className = 'message bot-message';
+                    chatbox.appendChild(botMessageDiv);
+        
+                    // Simulate typing effect
+                    typeText(botMessageDiv, data.response, 1000);
+        
+                    // Update score bubbles
+                    const scores = data.scores;
+                    explanations = scores.explanations;
+                    updateScoreBubble('chatbot-score1', scores.friendlyness);
+                    updateScoreBubble('chatbot-score2', scores.politically_correctness);
+                    updateScoreBubble('chatbot-score3', scores.gender_neutral);
+                    updateScoreBubble('chatbot-score4', scores.racially_neutral);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Hide typing indicator in case of error
+                    typingIndicator.style.display = 'none';
+                });
+            }
             console.log(data.message);
         })
         .catch(error => console.error('Error:', error));
