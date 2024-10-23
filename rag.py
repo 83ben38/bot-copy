@@ -1,14 +1,23 @@
 from openai import OpenAI
 import json
 from qdrant_client import QdrantClient  # Import QdrantClient
+data = open("key.txt",'r').read()
+
+lines = []
+length = len(data)
+j = 0
+for i in range(0,length):
+    if (data[i] == '\n'):
+        lines.append(data[j:i])
+        j = i+1
 
 # Set your OpenAI API key
 client = OpenAI(
-    api_key=''  # Ensure your API key is set in the environment
+    api_key=lines[0]  # Ensure your API key is set in the environment
 )
 
 # Initialize QdrantClient
-qdrant_client = QdrantClient(url="", api_key="")
+qdrant_client = QdrantClient(url=lines[1], api_key=lines[2])
 
 def get_chatgpt_response(input, history, constitution, vector):
     completion = client.chat.completions.create(
