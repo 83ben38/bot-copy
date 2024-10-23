@@ -53,7 +53,7 @@ def chat():
     user_message = request.json['message']
     chat_history += f"\nUser: {user_message}"
     vector = process_keywords(user_message)
-    response_message = get_chatgpt_response(user_message, chat_history, "", vector)
+    response_message = get_chatgpt_response(user_message, chat_history, "Your job is to respond to a person seeking help. Please provide them with help sources including links and phone numbers if they ask for help. If they are in immediate danger, make sure to tell them to call 911.", vector)
     chat_history += f"\nBot: {response_message}"
     scores = score(response_message, vector)
     
