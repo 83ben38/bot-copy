@@ -50,6 +50,8 @@ document.addEventListener('DOMContentLoaded', function() {
             updateScoreBubble('chatbot-score2', scores.politically_correctness);
             updateScoreBubble('chatbot-score3', scores.gender_neutral);
             updateScoreBubble('chatbot-score4', scores.racially_neutral);
+            updateScoreBubble('chatbot-score5', scores.safety);
+            updateScoreBubble('chatbot-score6', scores.bias);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -111,6 +113,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateScoreBubble('chatbot-score2', scores.politically_correctness);
                     updateScoreBubble('chatbot-score3', scores.gender_neutral);
                     updateScoreBubble('chatbot-score4', scores.racially_neutral);
+                    updateScoreBubble('chatbot-score5', scores.safety);
+                    updateScoreBubble('chatbot-score6', scores.bias);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -145,6 +149,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (buttonId == 3){
                 explanation.textContent = explanations.racially_neutral
+            }
+            if (buttonId == 4){
+                explanation.textContent = explanations.safety
+            }
+            if (buttonId == 5){
+                explanation.textContent = explanations.bias
             }
             isShown = buttonId
         }
