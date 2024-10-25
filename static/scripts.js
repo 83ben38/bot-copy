@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     var explanations;
+    var lastResponse;
     window.sendMessage = function() {
         const chatInput = document.getElementById('chatInput');
         const message = chatInput.value;
@@ -40,8 +41,8 @@ document.addEventListener('DOMContentLoaded', function() {
             chatbox.appendChild(botMessageDiv);
 
             // Simulate typing effect
+            lastResponse = data.response;
             typeText(botMessageDiv, data.response, 1000);
-
             // Update score bubbles
             const scores = data.scores;
             explanations = scores.explanations;
@@ -61,6 +62,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (buttonId == 1){
             window.resetChat();
         }
+        if (buttonId==2){
+            console.log(lastResponse);
+            navigator.clipboard.writeText(lastResponse);
+        } 
         fetch('/button_click', {
             method: 'POST',
             headers: {
@@ -96,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     chatbox.appendChild(botMessageDiv);
         
                     // Simulate typing effect
+                    lastResponse = data.response;
                     typeText(botMessageDiv, data.response, 1000);
         
                     // Update score bubbles
