@@ -1,6 +1,7 @@
 from openpyxl import load_workbook
 from rag import get_chatgpt_response, score, get_vector_reponse
 import threading
+import markdown
 
 wb = load_workbook('redteaming.xlsx')
 
@@ -63,10 +64,19 @@ def process_question(question_ID):
     ws[BiasCellID] = bias_score
     ws[AverageCellID] = average_score
 
+    # Save in history file
+    response_message_html = markdown.markdown(response_message)
+    response_message_without_enter = response_message_html.replace("\n",'`')
+    fileName = "Question " + str(question_ID-1)
+    newFile = open("./history/"+fileName.replace("\n","")+".txt",'w')
+    newFile.write(fileName+"\n")
+    newFile.write(question+"\n"+response_message_without_enter+"\n"+str(scores_dict)+"\n")
+    newFile.close()
+
     return question_ID
 
 start_ID = 1
-end_ID = 263
+end_ID = 3
 
 def process_questions_in_range(start, end):
     for question_ID in range(start, end + 1):
