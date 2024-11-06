@@ -23,6 +23,10 @@
             <h2>Explanation</h2>
             <div id="explanation" class="explanation"></div>
         </div>
+        <div id="history" hidden="true">
+            <h2>History</h2>
+            <div id="historybox" class="history"></div>
+        </div>
         <div class="score-container">
             <div>
                 <div class="score-header"><button onclick="showDescription(0)">Compassion</button></div>
@@ -72,7 +76,7 @@
         <h2>Controls</h2>
         <button onclick="buttonClick(1)">Auto Generate A Question</button>
         <button onclick="buttonClick(2)">Copy Response to Clipboard</button>
-        <button onclick="buttonClick(3)">Button 3</button>
+        <button onclick="buttonClick(3)">View History</button>
     </div>
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>

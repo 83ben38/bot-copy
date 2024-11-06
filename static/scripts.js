@@ -122,6 +122,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     typingIndicator.style.display = 'none';
                 });
             }
+            if (buttonId==3){
+                window.showHistory(data.message);
+            }
             console.log(data.message);
         })
         .catch(error => console.error('Error:', error));
@@ -136,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
         else{
             document.getElementById("popup").hidden = false;
             document.getElementById("chatbot").hidden = true;
-            isShown = true;
+            document.getElementById("history").hidden = true;
             const explanation = document.getElementById('explanation');
             if (buttonId == 0){
                 explanation.textContent = explanations.friendlyness
@@ -160,6 +163,64 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    var historyOpen = false;
+    var previousFilled = false;
+    window.showHistory = function(history){
+        console.log(history)
+        if (historyOpen){
+            document.getElementById("history").hidden = true;
+            document.getElementById("chatbot").hidden = false;
+            historyOpen = false;
+        }
+        else{
+            document.getElementById("history").hidden = false;
+            document.getElementById("chatbot").hidden = true;
+            document.getElementById("popup").hidden = true;
+            historyOpen = true;
+            if (!previousFilled){            
+                previousFilled = true;
+                const chatbox = document.getElementById('historybox');
+                k = 0;
+                history.forEach(element => {
+                    const j = k;
+                    const userMessageDiv = document.createElement('button');
+                    userMessageDiv.className = 'message user-message';
+                    userMessageDiv.textContent = element.chat[0].question +" "+ element.date;
+                    userMessageDiv.onclick = function(){window.showConversation(j);};
+                    k=k+1;
+                    chatbox.appendChild(userMessageDiv);
+                });
+            }
+        }
+    }
+
+    window.showConversation = function(number){
+        document.getElementById("history").hidden = true;
+        document.getElementById("chatbot").hidden = false;
+        historyOpen = false;
+        window.resetChat();
+        fetch('/update_chat_history', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ num: number })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const chatbox = document.getElementById('chatbox');
+            data.forEach(element =>{
+                const userMessageDiv = document.createElement('div');
+                userMessageDiv.className = 'message user-message';
+                userMessageDiv.textContent = element.question;
+                chatbox.appendChild(userMessageDiv);
+                const botMessageDiv = document.createElement('div');
+                botMessageDiv.className = 'message bot-message';
+                botMessageDiv.innerHTML = element.response;
+                chatbox.appendChild(botMessageDiv);
+            });
+        })
+    }
     window.resetChat = function() {
         const chatbox = document.getElementById('chatbox');
         chatbox.innerHTML = '';

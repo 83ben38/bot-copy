@@ -29,7 +29,7 @@ h1 {
     border-radius: 8px;
 }
 
-#chatbox, #explanation {
+#chatbox, #explanation, #historybox {
     border: 1px solid #ddd;
     padding: 1em;
     height: 500px; /* Increased height */
