@@ -2,6 +2,7 @@ from openpyxl import load_workbook
 from rag import get_chatgpt_response, score, get_vector_reponse, get_main_bot_constitution
 import threading
 import markdown
+from config.scoringconfig import SCORING_CRITERIA
 
 wb = load_workbook('redteaming.xlsx')
 
@@ -24,14 +25,6 @@ def process_question(question_ID):
 
     ResponseCellID = 'E' + str(question_ID)
 
-    CompasstionCellID = 'F' + str(question_ID)
-    AccuracyCellID = 'G' + str(question_ID)
-    RelevancyCellID = 'H' + str(question_ID)
-    SimplicityCellID = 'I' + str(question_ID)
-    SafetyCellID = 'J' + str(question_ID)
-    BiasCellID = 'K' + str(question_ID)
-    AverageCellID = 'L' + str(question_ID)
-
 
 
     vector = get_vector_reponse(question)
@@ -47,24 +40,15 @@ def process_question(question_ID):
     # Score the response
     scores_dict = score(response_message, question)
     
-    # Unpack the scores_dict into separate variables
-    compassion_score = scores_dict.get('Compassion', 0)
-    accuracy_score = scores_dict.get('Accuracy', 0)
-    relevancy_score = scores_dict.get('Relevancy', 0)
-    simplicity_score = scores_dict.get('Simplicity', 0)
-    safety_score = scores_dict.get('Safety', 0)
-    bias_score = scores_dict.get('Bias', 0)
-
-    average_score = (compassion_score + accuracy_score + relevancy_score + simplicity_score + safety_score + bias_score) / 6
-
+    z = 0
+    for criterion in SCORING_CRITERIA.items():
+        ScoreCellID = ('F' + (z*2))+str(question_ID)
+        ReasoningCellID = ('G' + (z*2))+str(question_ID)
+        z+=1
+        ws[ScoreCellID] = scores_dict[criterion]['score']
+        ws[ReasoningCellID] = scores_dict[criterion]['reasoning']
     # Save the scores
-    ws[CompasstionCellID] = compassion_score
-    ws[AccuracyCellID] = accuracy_score
-    ws[RelevancyCellID] = relevancy_score
-    ws[SimplicityCellID] = simplicity_score
-    ws[SafetyCellID] = safety_score
-    ws[BiasCellID] = bias_score
-    ws[AverageCellID] = average_score
+    
 
     # Save in history file
     response_message_html = markdown.markdown(response_message)
