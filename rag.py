@@ -18,6 +18,12 @@ client = OpenAI(
     api_key=lines[0]  # Ensure your API key is set in the environment
 )
 
+
+main_bot_constitution = "Your job is to respond to a person seeking help or information. If they ask for something which is not relevant to the provided data, respond with a blank answer. Please provide them with help sources including links and phone numbers from the data. If they are in immediate danger, make sure to tell them to call 911. "
+def get_main_bot_constitution():
+    return main_bot_constitution   
+
+
 # Initialize QdrantClient
 qdrant_client = QdrantClient(url=lines[1], api_key=lines[2])
 

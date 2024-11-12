@@ -1,5 +1,5 @@
 from openpyxl import load_workbook
-from rag import get_chatgpt_response, score, get_vector_reponse
+from rag import get_chatgpt_response, score, get_vector_reponse, get_main_bot_constitution
 import threading
 import markdown
 
@@ -37,8 +37,10 @@ def process_question(question_ID):
     vector = get_vector_reponse(question)
     
     # Take the question, and process it with 
-    response_message = get_chatgpt_response(question, "", "Your job is to respond to a person seeking help. Please provide them with help sources including links and phone numbers if they ask for help. If they are in immediate danger, make sure to tell them to call 911. Please don't give any information outside of the provided information, and cite your sources.", vector)
-    
+    response_message = get_chatgpt_response(question, "", get_main_bot_constitution(), vector)
+    if (len(response_message) < 5):
+        response_message = "I'm sorry, but I can't help with that. I can provide guidance to those who need help with harassment and information about sexual exploitation or similar topics."
+
     # Save the response
     ws[ResponseCellID] = str(response_message)
 
