@@ -105,7 +105,9 @@ def chat():
     user_message = request.json['message']
     chat_history += f"\nUser: {user_message}"
     vector = process_keywords(user_message)
-    response_message = get_chatgpt_response(user_message, chat_history, "Your job is to respond to a person seeking help. Please provide them with help sources including links and phone numbers if they ask for help. If they are in immediate danger, make sure to tell them to call 911. Please don't give any information outside of the provided information, and cite your sources.", vector)
+    response_message = get_chatgpt_response(user_message, chat_history, "Your job is to respond to a person seeking help or information. If they ask for something which is not relevant to the provided data, respond with a blank answer. Please provide them with help sources including links and phone numbers from the data. If they are in immediate danger, make sure to tell them to call 911. ", vector)
+    if (len(response_message) < 5):
+        response_message = "I'm sorry, but I can't help with that. I can provide guidance to those who need help with harassment and information about sexual exploitation or similar topics."
     chat_history += f"\nBot: {response_message}"
     scores = score(response_message, vector)
 
