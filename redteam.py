@@ -1,5 +1,5 @@
 from openpyxl import load_workbook
-from rag import get_chatgpt_response, score, get_vector_reponse, get_main_bot_constitution
+import rag
 import threading
 import markdown
 from config.scoringconfig import SCORING_CRITERIA
@@ -27,10 +27,10 @@ def process_question(question_ID):
 
 
 
-    vector = get_vector_reponse(question)
+    vector = rag.get_vector_reponse(question)
     
     # Take the question, and process it with 
-    response_message = get_chatgpt_response(question, "", get_main_bot_constitution(), vector)
+    response_message = rag.get_chatgpt_response(question, "", rag.get_main_bot_constitution(), vector)
     if (len(response_message) < 5):
         response_message = "I'm sorry, but I can't help with that. I can provide guidance to those who need help with harassment and information about sexual exploitation or similar topics."
 
@@ -38,12 +38,12 @@ def process_question(question_ID):
     ws[ResponseCellID] = str(response_message)
 
     # Score the response
-    scores_dict = score(response_message, question)
+    scores_dict = rag.score_material(response_message, question)
     
     z = 0
-    for criterion in SCORING_CRITERIA.items():
-        ScoreCellID = ('F' + (z*2))+str(question_ID)
-        ReasoningCellID = ('G' + (z*2))+str(question_ID)
+    for criterion, description in SCORING_CRITERIA.items():
+        ScoreCellID = chr(ord('F') + (z*2))+str(question_ID)
+        ReasoningCellID = chr(ord('G') + (z*2))+str(question_ID)
         z+=1
         ws[ScoreCellID] = scores_dict[criterion]['score']
         ws[ReasoningCellID] = scores_dict[criterion]['reasoning']
@@ -62,7 +62,7 @@ def process_question(question_ID):
     return question_ID
 
 start_ID = 1
-end_ID = 3
+end_ID = 348
 
 def process_questions_in_range(start, end):
     for question_ID in range(start, end + 1):
@@ -70,7 +70,7 @@ def process_questions_in_range(start, end):
     wb.save("output.xlsx")
 
 threads = []
-num_threads = 5
+num_threads = 10
 questions_per_thread = (end_ID - start_ID + 1) // num_threads
 
 for i in range(num_threads):
