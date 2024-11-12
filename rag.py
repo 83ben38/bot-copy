@@ -25,7 +25,7 @@ def get_chatgpt_response(input, history, constitution, vector):
     completion = client.chat.completions.create(
         model="gpt-4o-mini",  # You can update this to the model you want to use
         messages=[
-            {"role": "system", "content": "Chat History: " + history + "This is your constitution (if empty, assume none required):" + constitution + "\n" + "Here is the relevant data to the users question (if none, rely on your own knowledge, if provided, primarily use the relevant data over your own knowledge): " + vector},  # System prompt)}, 
+            {"role": "system", "content": "Chat History: " + history + "This these are your restrictions (if empty, assume none required):" + constitution + "\n" + "Here is the relevant data to the users question (if none, rely on your own knowledge, if provided, primarily use the relevant data over your own knowledge): " + vector},  # System prompt)}, 
             {"role": "user", "content": input}  # User's content
         ],
         max_tokens=2048
@@ -36,32 +36,21 @@ def get_chatgpt_response(input, history, constitution, vector):
 
 
 
-def score(message, context):
-    # Build a list that holds the scores
-    scores = []
-    # Loop through the scoring criteria
-    for criterion in SCORING_CRITERIA:
-        # Get the weight for the criterion
-        weight = SCORING_WEIGHTS.get(criterion, 1.0)
-        # Get the score for the criterion
-        score = get_score(message, context, criterion)
-        # Append the weighted score to the scores list
-        scores.append(score * weight)
-        
-        # Calculate the total score by summing the weighted scores
-        total_score = sum(scores)
-        
-        # Normalize the total score to the scoring scale
-        normalized_score = total_score / len(SCORING_CRITERIA) * SCORING_SCALE
-        
-        return normalized_score
 
-def get_score(message, context, criterion):
-    response = get_chatgpt_response(message, "", criterion, context)
-    scores_dict = ast.literal_eval(response)
-    return scores_dict
+def score_material(scoringmaterial, context):
+    scores = {}
+    for criterion, description  in SCORING_CRITERIA.items():
+        score_response = get_chatgpt_response(scoringmaterial, "", "you are going to be scoring another ai's work, you are to return a number, 1-5, on how well it fits this criterion:" + description + "Give your number, and then after the number have a comma, then your reasoning for that score, e.g: 5, perfect reponse meets all the criteria, or, 2, not awful, but could be improved if the reply did ___, DO NOT GIVE ANY OTHER OUTPUT THAN THIS OR THE CODE RUNNING BEHIND YOU WILL BREAK AND YOU WILL GET IN TROUBLE", context)
+        #split the scores into the number and the reasoning
+        score_response = score_response.split(",")
+        scores[criterion] = {
+            'score': int(score_response[0]),
+            'reasoning': score_response
+        }
 
-
+        print(scores)
+    return scores
+    
 
 def get_vector_reponse(input):
     query = client.embeddings.create(
@@ -88,6 +77,9 @@ def toString(vector):
     # Convert JSON to object
 
     return string
+
+
+score_material("This is a test", "This is a test")
     
 
 

@@ -80,6 +80,9 @@ def score(reply, vector):
     #break the output from the ai into the 4 variables
     return response_message
 @app.route('/update_chat_history', methods=['POST'])
+
+
+
 def updateChatHistory():
     num = request.json['num']
     global chat_history
