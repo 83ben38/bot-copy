@@ -61,26 +61,41 @@ def process_question(question_ID):
 
     return question_ID
 
+import threading
+import queue
+
 start_ID = 1
-end_ID = 348
+end_ID = 3
 
-def process_questions_in_range(start, end):
-    for question_ID in range(start, end + 1):
-        process_question(question_ID)
-    wb.save("output.xlsx")
+def process_question(question_ID):
+    # Your existing process_question function implementation
+    pass
 
+def worker(q):
+    while not q.empty():
+        question_ID = q.get()
+        try:
+            process_question(question_ID)
+        finally:
+            q.task_done()
+
+# Create a queue and populate it with question IDs
+q = queue.Queue()
+for question_ID in range(start_ID, end_ID + 1):
+    q.put(question_ID)
+
+# Create and start threads
+num_threads = 5
 threads = []
-num_threads = 10
-questions_per_thread = (end_ID - start_ID + 1) // num_threads
-
-for i in range(num_threads):
-    thread_start_ID = start_ID + i * questions_per_thread
-    thread_end_ID = thread_start_ID + questions_per_thread - 1
-    if i == num_threads - 1:  # Make sure the last thread processes any remaining questions
-        thread_end_ID = end_ID
-    thread = threading.Thread(target=process_questions_in_range, args=(thread_start_ID, thread_end_ID))
+for _ in range(num_threads):
+    thread = threading.Thread(target=worker, args=(q,))
     threads.append(thread)
     thread.start()
 
+# Wait for all threads to finish
+q.join()
 for thread in threads:
     thread.join()
+
+# Save the workbook after all threads have finished processing
+wb.save("output.xlsx")

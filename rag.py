@@ -27,18 +27,31 @@ def get_main_bot_constitution():
 # Initialize QdrantClient
 qdrant_client = QdrantClient(url=lines[1], api_key=lines[2])
 
+def format_messages(history, constitution, vector, user_input):
+    system_message = {
+        "role": "system",
+        "content": f"Chat History: {history} These are your restrictions (if empty, assume none required): {constitution}\nHere is the relevant data to the user's question (if none, rely on your own knowledge, if provided, primarily use the relevant data over your own knowledge): {vector}"
+    }
+    user_message = {"role": "user", "content": user_input}
+    return [system_message, user_message]
+
 def get_chatgpt_response(input, history, constitution, vector):
-    completion = client.chat.completions.create(
-        model="gpt-4o-mini",  # You can update this to the model you want to use
-        messages=[
-            {"role": "system", "content": "Chat History: " + history + "This these are your restrictions (if empty, assume none required):" + constitution + "\n" + "Here is the relevant data to the users question (if none, rely on your own knowledge, if provided, primarily use the relevant data over your own knowledge): " + vector},  # System prompt)}, 
-            {"role": "user", "content": input}  # User's content
-        ],
-        max_tokens=2048
-    )
-    # Handle the response using the new method
-    api_response = completion.choices[0].message.content.strip()
-    return api_response
+    messages = format_messages(history, constitution, vector, input)
+    try:
+        completion = client.chat.completions.create(
+            model="gpt-4o-mini",  # You can update this to the model you want to use
+            messages=messages,
+            max_tokens=2048
+        )
+        api_response = completion.choices[0].message.content.strip()
+        return api_response
+    except Exception as e:
+        print(f"Error: {e}")
+        return "An error occurred while processing your request."
+
+# Example usage
+response = get_chatgpt_response("What is the weather today?", "Previous chat history", main_bot_constitution, "Relevant data vector")
+print(response)
 
 
 
@@ -83,11 +96,4 @@ def toString(vector):
     # Convert JSON to object
 
     return string
-
-
-score_material("This is a test", "This is a test")
-    
-
-
-
 
