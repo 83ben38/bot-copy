@@ -91,8 +91,10 @@ for _ in range(num_threads):
 
 # Wait for all threads to finish
 q.join()
+print("All questions selected.\n")
 for thread in threads:
     thread.join()
+    print("Thread completed.\n")
 
 # Save the workbook after all threads have finished processing
 wb.save("output.xlsx")

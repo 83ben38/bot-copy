@@ -45,13 +45,13 @@ document.addEventListener('DOMContentLoaded', function() {
             typeText(botMessageDiv, data.response, 1000);
             // Update score bubbles
             const scores = data.scores;
-            explanations = scores.explanations;
-            updateScoreBubble('chatbot-score1', scores.friendlyness);
-            updateScoreBubble('chatbot-score2', scores.politically_correctness);
-            updateScoreBubble('chatbot-score3', scores.gender_neutral);
-            updateScoreBubble('chatbot-score4', scores.racially_neutral);
-            updateScoreBubble('chatbot-score5', scores.safety);
-            updateScoreBubble('chatbot-score6', scores.bias);
+            explanations = scores;
+            updateScoreBubble('chatbot-score1', scores.compassion.score);
+            updateScoreBubble('chatbot-score2', scores.accuracy.score);
+            updateScoreBubble('chatbot-score3', scores.relevancy.score);
+            updateScoreBubble('chatbot-score4', scores.simplicity.score);
+            updateScoreBubble('chatbot-score5', scores.safety.score);
+            updateScoreBubble('chatbot-score6', scores.bias.score);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -108,13 +108,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
                     // Update score bubbles
                     const scores = data.scores;
-                    explanations = scores.explanations;
-                    updateScoreBubble('chatbot-score1', scores.friendlyness);
-                    updateScoreBubble('chatbot-score2', scores.politically_correctness);
-                    updateScoreBubble('chatbot-score3', scores.gender_neutral);
-                    updateScoreBubble('chatbot-score4', scores.racially_neutral);
-                    updateScoreBubble('chatbot-score5', scores.safety);
-                    updateScoreBubble('chatbot-score6', scores.bias);
+                    explanations = scores;
+                    updateScoreBubble('chatbot-score1', scores.compassion.score);
+                    updateScoreBubble('chatbot-score2', scores.accuracy.score);
+                    updateScoreBubble('chatbot-score3', scores.relevancy.score);
+                    updateScoreBubble('chatbot-score4', scores.simplicity.score);
+                    updateScoreBubble('chatbot-score5', scores.safety.score);
+                    updateScoreBubble('chatbot-score6', scores.bias.score);
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -142,22 +142,22 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById("history").hidden = true;
             const explanation = document.getElementById('explanation');
             if (buttonId == 0){
-                explanation.textContent = explanations.friendlyness
+                explanation.textContent = explanations.compassion.reasoning
             }
             if (buttonId == 1){
-                explanation.textContent = explanations.politically_correctness
+                explanation.textContent = explanations.accuracy.reasoning
             }
             if (buttonId == 2){
-                explanation.textContent = explanations.gender_neutral
+                explanation.textContent = explanations.relevancy.reasoning
             }
             if (buttonId == 3){
-                explanation.textContent = explanations.racially_neutral
+                explanation.textContent = explanations.simplicity.reasoning
             }
             if (buttonId == 4){
-                explanation.textContent = explanations.safety
+                explanation.textContent = explanations.safety.reasoning
             }
             if (buttonId == 5){
-                explanation.textContent = explanations.bias
+                explanation.textContent = explanations.bias.reasoning
             }
             isShown = buttonId
         }
