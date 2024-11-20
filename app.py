@@ -1,7 +1,7 @@
 from rag import get_chatgpt_response
 from rag import get_vector_reponse, get_main_bot_constitution, score_material
 from flask import Flask, render_template, request, jsonify
-
+import json
 import markdown
 import random
 app = Flask(__name__)
@@ -46,7 +46,7 @@ def button_click():
 
 
 
-
+@app.route('/update_chat_history',methods=['POST'])
 def updateChatHistory():
     num = request.json['num']
     global chat_history
@@ -56,11 +56,13 @@ def updateChatHistory():
     global newFile
     newFile = "."
     chat = file['chat']
+    scores = ""
     for z in chat:
         chat_history+=f"\nUser: {z['question']}"
         chat_history += f"\nBot: {z['response']}"
-    print(chat)
-    return chat
+        scores = json.loads(str(z['scores']).replace('\'','\"'))
+    print(scores)
+    return jsonify({'chat': chat,'scores':scores})
 
 
 @app.route('/chat', methods=['POST'])
@@ -85,7 +87,7 @@ def chat():
     newFile = open("./history/"+fileName.replace("\n","")+".txt",'a')
     if (oldFile == ""):
         newFile.write(fileName+"\n")
-    newFile.write(user_message+"\n"+response_message_without_enter+"\n"+scores+"\n")
+    newFile.write(user_message+"\n"+response_message_without_enter+"\n"+str(scores)+"\n")
     newFile.close()
     return jsonify({
         'response': response_message_html,

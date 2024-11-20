@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             const chatbox = document.getElementById('chatbox');
-            data.forEach(element =>{
+            data.chat.forEach(element =>{
                 const userMessageDiv = document.createElement('div');
                 userMessageDiv.className = 'message user-message';
                 userMessageDiv.textContent = element.question;
@@ -219,6 +219,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 botMessageDiv.innerHTML = element.response;
                 chatbox.appendChild(botMessageDiv);
             });
+            var numOn = 0
+            data.scores.forEach(element =>{
+                numOn++
+                updateScoreBubble('chatbot-score'+numOn, element.score);
+            })
         })
     }
     window.resetChat = function() {
@@ -274,9 +279,9 @@ function interpolateColor(value) {
     const startColor = { r: 220, g: 20, b: 60 }; // Crimson Red
     const endColor = { r: 34, g: 139, b: 34 }; // Forest Green
 
-    const r = Math.round(startColor.r + (endColor.r - startColor.r) * (value / 100));
-    const g = Math.round(startColor.g + (endColor.g - startColor.g) * (value / 100));
-    const b = Math.round(startColor.b + (endColor.b - startColor.b) * (value / 100));
+    const r = Math.round(startColor.r + (endColor.r - startColor.r) * (value / 5));
+    const g = Math.round(startColor.g + (endColor.g - startColor.g) * (value / 5));
+    const b = Math.round(startColor.b + (endColor.b - startColor.b) * (value / 5));
 
     return `rgb(${r}, ${g}, ${b})`;
 }
@@ -288,7 +293,7 @@ window.updateScoreBubble = function(bubbleId, newValue) {
         const innerCircle = scoreBubble.querySelector(".inner-circle");
         let startValue = parseInt(progressValue.textContent, 10);
         let endValue = Number(newValue);
-        let speed = 10;
+        let speed = 200;
 
         const progress = setInterval(() => {
             if (startValue < endValue) {
@@ -297,12 +302,12 @@ window.updateScoreBubble = function(bubbleId, newValue) {
                 startValue--;
             }
             const progressColor = interpolateColor(startValue);
-            progressValue.textContent = `${startValue}%`;
+            progressValue.textContent = `${startValue}/5`;
             progressValue.style.color = `${progressColor}`;
 
             innerCircle.style.backgroundColor = `lightgrey`;
 
-            scoreBubble.style.background = `conic-gradient(${progressColor} ${startValue * 3.6}deg, gray 0deg)`;
+            scoreBubble.style.background = `conic-gradient(${progressColor} ${startValue * 72}deg, gray 0deg)`;
             if (startValue === endValue) {
                 clearInterval(progress);
             }
