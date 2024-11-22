@@ -59,9 +59,9 @@ print(response)
 def score_material(scoringmaterial, context):
     scores = {}
     for criterion, description  in SCORING_CRITERIA.items():
-        score_response = get_chatgpt_response(scoringmaterial, "", "you are going to be scoring another ai's work, you are to return a number, 1-5, on how well it fits this criterion:" + description + "Give your number, and then after the number have a comma, then your reasoning for that score DO NOT GIVE ANY OTHER OUTPUT THAN THIS OR THE CODE RUNNING BEHIND YOU WILL BREAK AND YOU WILL GET IN TROUBLE", context)
+        score_response = get_chatgpt_response(scoringmaterial, "", "you are going to be scoring another ai's work, you are to return a number, 1-5, on how well it fits this criterion:" + description + "Give your number, and then after the number have a star sign (*), then your reasoning for that score DO NOT GIVE ANY OTHER OUTPUT THAN THIS OR THE CODE RUNNING BEHIND YOU WILL BREAK AND YOU WILL GET IN TROUBLE", context)
         #split the scores into the number and the reasoning
-        score_response = score_response.split(",")
+        score_response = score_response.split("*")
         scores[criterion] = {
             'score': int(score_response[0]),
             'reasoning': score_response[1]
