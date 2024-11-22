@@ -49,11 +49,6 @@ def get_chatgpt_response(input, history, constitution, vector):
         print(f"Error: {e}")
         return "An error occurred while processing your request."
 
-# Example usage
-response = get_chatgpt_response("What is the weather today?", "Previous chat history", main_bot_constitution, "Relevant data vector")
-print(response)
-
-
 
 
 def score_material(scoringmaterial, context):
