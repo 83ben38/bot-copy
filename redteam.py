@@ -75,6 +75,7 @@ def worker(q):
             process_question(question_ID)
         finally:
             q.task_done()
+    wb.save("output.xlsx")
 
 # Create a queue and populate it with question IDs
 q = queue.Queue()
@@ -82,19 +83,17 @@ for question_ID in range(start_ID, end_ID + 1):
     q.put(question_ID)
 
 # Create and start threads
-num_threads = 5
+num_threads = 6
 threads = []
 for _ in range(num_threads):
     thread = threading.Thread(target=worker, args=(q,))
     threads.append(thread)
     thread.start()
 
-# Wait for all threads to finish
-q.join()
-print("All questions selected.\n")
+
 for thread in threads:
     thread.join()
     print("Thread completed.\n")
 
 # Save the workbook after all threads have finished processing
-wb.save("output.xlsx")
+
