@@ -74,8 +74,6 @@ def score_material(scoringmaterial, context, data):
             'reasoning': score_response[1]
         }
         score_values.append(int(score_response[0]))
-    print(score_values)
-    print("HELLO WORLD I AM SCORING RIGHT NOW")
     scoreJSON(score_values)
     return scores
     
