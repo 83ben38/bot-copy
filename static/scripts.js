@@ -334,3 +334,36 @@ function typeText(element, html, baseSpeed) {
     }
     type();
 }
+
+
+// Fetch or generate the data
+const data = [
+    {"timestamp": "2024-12-03T10:00:00Z", "scores": [4, 3, 5, 4, 5, 4, 3, 4]},
+    {"timestamp": "2024-12-03T10:05:00Z", "scores": [3, 4, 4, 5, 4, 3, 5, 5]}
+];
+
+// Process data for Chart.js
+const labels = data.map(entry => new Date(entry.timestamp).toLocaleTimeString());
+const datasets = Array.from({length: 8}, (_, i) => ({
+    label: `Metric ${i + 1}`,
+    data: data.map(entry => entry.scores[i]),
+    borderColor: `hsl(${(i * 45) % 360}, 70%, 50%)`,
+    fill: false,
+}));
+
+// Render the chart
+const ctx = document.getElementById('scoreChart').getContext('2d');
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: datasets
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: { position: 'top' },
+            title: { display: true, text: 'Chatbot Score Trends' }
+        }
+    }
+});
