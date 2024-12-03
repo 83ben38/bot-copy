@@ -39,7 +39,7 @@ qdrant_client = QdrantClient(url=lines[1], api_key=lines[2])
 def format_messages(history, constitution, vector, user_input):
     system_message = {
         "role": "system",
-        "content": f"Chat History: {history} These are your restrictions (if empty, assume none required): {constitution}\nHere is the relevant data to the user's question (if none, rely on your own knowledge, if provided, primarily use the relevant data over your own knowledge): {vector}"
+        "content": (f"Chat History: {history}" if history != "" else "") +f"\n{constitution}\n" + (f"Here is the relevant data to the user's question: {vector}" if vector != "" else "")
     }
     user_message = {"role": "user", "content": user_input}
     return [system_message, user_message]
@@ -60,10 +60,10 @@ def get_chatgpt_response(input, history, constitution, vector):
 
 
 
-def score_material(scoringmaterial, context):
+def score_material(scoringmaterial, context, data):
     scores = {}
     for criterion, description  in SCORING_CRITERIA.items():
-        score_response = get_chatgpt_response(scoringmaterial, "", "you are going to be scoring another ai's work, you are to return a number, 1-5, on how well it fits this criterion (1 is a bad response and 5 is a good one):" + description + "Give your number, and then after the number have a star sign (*), then your reasoning for that score DO NOT GIVE ANY OTHER OUTPUT THAN THIS OR THE CODE RUNNING BEHIND YOU WILL BREAK AND YOU WILL GET IN TROUBLE", context)
+        score_response = get_chatgpt_response(scoringmaterial, f"User: {context}", "you are going to be scoring another ai's work, you are to return a number, 1-5, on how well it fits this criterion (1 is a bad response and 5 is a good one):" + description + "Give your number, and then after the number have a star sign (*), then your reasoning for that score DO NOT GIVE ANY OTHER OUTPUT THAN THIS OR THE CODE RUNNING BEHIND YOU WILL BREAK AND YOU WILL GET IN TROUBLE", data)
         #split the scores into the number and the reasoning
         score_response = score_response.split("*")
         scores[criterion] = {

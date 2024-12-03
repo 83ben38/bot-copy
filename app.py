@@ -75,7 +75,7 @@ def chat():
     if (len(response_message) < 5):
         response_message = "I'm sorry, but I can't help with that. I can provide guidance to those who need help with harassment and information about sexual exploitation or similar topics."
     chat_history += f"\nBot: {response_message}"
-    scores = score_material(response_message,user_message)
+    scores = score_material(response_message,user_message,vector)
 
     # Convert Markdown to HTML
     response_message_html = markdown.markdown(response_message)

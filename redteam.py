@@ -38,7 +38,7 @@ def process_question(question_ID):
     ws[ResponseCellID] = str(response_message)
 
     # Score the response
-    scores_dict = rag.score_material(response_message, question)
+    scores_dict = rag.score_material(response_message, question,vector)
     
     z = 0
     for criterion, description in SCORING_CRITERIA.items():
