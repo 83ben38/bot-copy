@@ -125,6 +125,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (buttonId==3){
                 window.showHistory(data.message);
             }
+            if (buttonId==4){
+                updateChartFromFile(scoreChart);
+            }
             console.log(data.message);
         })
         .catch(error => console.error('Error:', error));
@@ -287,6 +290,7 @@ function interpolateColor(value) {
 }
 
 window.updateScoreBubble = function(bubbleId, newValue) {
+    updateChartFromFile(scoreChart);
     const scoreBubble = document.getElementById(bubbleId);
     if (scoreBubble) {
         const progressValue = scoreBubble.querySelector(".percentage");
@@ -336,34 +340,76 @@ function typeText(element, html, baseSpeed) {
 }
 
 
-// Fetch or generate the data
-const data = [
-    {"timestamp": "2024-12-03T10:00:00Z", "scores": [4, 3, 5, 4, 5, 4, 3, 4]},
-    {"timestamp": "2024-12-03T10:05:00Z", "scores": [3, 4, 4, 5, 4, 3, 5, 5]}
+// Define metric names
+const metricNames = [
+    "Compassion",    // Metric 1
+    "Accuracy",   // Metric 2
+    "Relevancy",     // Metric 3
+    "Simplicity", // Metric 4
+    "Safety",  // Metric 5
+    "Bias" // Metric 6
 ];
 
-// Process data for Chart.js
-const labels = data.map(entry => new Date(entry.timestamp).toLocaleTimeString());
-const datasets = Array.from({length: 8}, (_, i) => ({
-    label: `Metric ${i + 1}`,
-    data: data.map(entry => entry.scores[i]),
-    borderColor: `hsl(${(i * 45) % 360}, 70%, 50%)`,
-    fill: false,
-}));
+// Function to fetch the score history and update the chart
+async function updateChartFromFile(chart, filePath = "static/history/scorehistory.json") {
+    try {
+        // Fetch the JSON data
+        const response = await fetch(filePath + `?t=${Date.now()}`); // Cache-busting query param
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
 
-// Render the chart
+        if (!Array.isArray(data) || data.length === 0) {
+            throw new Error("Score history is empty or invalid format.");
+        }
+
+        // Process the fetched data
+        const labels = data.map(entry => new Date(entry.timestamp).toLocaleTimeString());
+        const datasets = metricNames.map((name, i) => ({
+            label: name, // Use custom metric names
+            data: data.map(entry => entry.scores[i]),
+            borderColor: `hsl(${(i * 45) % 360}, 70%, 50%)`,
+            borderWidth: 2,
+            fill: false,
+        }));
+
+        // Update the chart data
+        chart.data.labels = labels;
+        chart.data.datasets = datasets;
+        chart.update();
+    } catch (error) {
+        console.error("Failed to fetch or process score history:", error);
+    }
+}
+
+// Initialize the chart
 const ctx = document.getElementById('scoreChart').getContext('2d');
-new Chart(ctx, {
+const scoreChart = new Chart(ctx, {
     type: 'line',
     data: {
-        labels: labels,
-        datasets: datasets
+        labels: [], // Initially empty
+        datasets: [] // Initially empty
     },
     options: {
+        animations: {
+            tension: {
+              duration: 1000,
+              easing: 'easeInOutSine',
+              from: .3,
+              to: .2,
+              loop: true
+            }
+          },
         responsive: true,
         plugins: {
             legend: { position: 'top' },
             title: { display: true, text: 'Chatbot Score Trends' }
+        },
+        scales: {
+            x: { title: { display: true, text: 'Time' } },
+            y: { title: { display: true, text: 'Scores' }, beginAtZero: true, max: 5 }
         }
     }
 });
+
+// Initial chart load
+updateChartFromFile(scoreChart);

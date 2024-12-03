@@ -1,6 +1,8 @@
+import datetime
 from openai import OpenAI
 from qdrant_client import QdrantClient  # Import QdrantClient
 import ast
+import json  # Import json module
 from config.scoringconfig import SCORING_WEIGHTS, SCORING_SCALE, SCORING_CRITERIA;
 
 data = open("key.txt",'r').read()
@@ -62,6 +64,7 @@ def get_chatgpt_response(input, history, constitution, vector):
 
 def score_material(scoringmaterial, context, data):
     scores = {}
+    score_values = []
     for criterion, description  in SCORING_CRITERIA.items():
         score_response = get_chatgpt_response(scoringmaterial, f"User: {context}", "you are going to be scoring another ai's work, you are to return a number, 1-5, on how well it fits this criterion (1 is a bad response and 5 is a good one):" + description + "Give your number, and then after the number have a star sign (*), then your reasoning for that score DO NOT GIVE ANY OTHER OUTPUT THAN THIS OR THE CODE RUNNING BEHIND YOU WILL BREAK AND YOU WILL GET IN TROUBLE", data)
         #split the scores into the number and the reasoning
@@ -70,8 +73,10 @@ def score_material(scoringmaterial, context, data):
             'score': int(score_response[0]),
             'reasoning': score_response[1]
         }
-
-        print(scores)
+        score_values.append(int(score_response[0]))
+    print(score_values)
+    print("HELLO WORLD I AM SCORING RIGHT NOW")
+    scoreJSON(score_values)
     return scores
     
 
@@ -101,3 +106,26 @@ def toString(vector):
 
     return string
 
+
+
+def scoreJSON(new_scores, file_path="static/history/scorehistory.json"):
+    # Load existing data
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        data = []  # Start fresh if the file doesn't exist or is invalid
+    
+    # Create a new entry with a timestamp
+    new_entry = {
+        "timestamp": datetime.datetime.now().isoformat(),  # ISO 8601 format with UTC timezone
+        "scores": new_scores
+    }
+    
+    # Append the new entry and limit to 6 most recent entries
+    data.append(new_entry)
+    data = data[-6:]  # Keep only the last 6 entries
+    
+    # Save the updated data back to the file
+    with open(file_path, 'w') as file:
+        json.dump(data, file, indent=4)
