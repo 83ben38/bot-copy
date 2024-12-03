@@ -124,7 +124,6 @@ def scoreJSON(new_scores, file_path="static/history/scorehistory.json"):
     
     # Append the new entry and limit to 6 most recent entries
     data.append(new_entry)
-    data = data[-6:]  # Keep only the last 6 entries
     
     # Save the updated data back to the file
     with open(file_path, 'w') as file:
