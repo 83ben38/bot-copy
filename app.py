@@ -60,7 +60,6 @@ def updateChatHistory():
     for z in chat:
         chat_history+=f"\nUser: {z['question']}"
         chat_history += f"\nBot: {z['response']}"
-        scores = json.loads(str(z['scores']).replace('\'','\"'))
     return jsonify({'chat': chat,'scores':scores})
 
 

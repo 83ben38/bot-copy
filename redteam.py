@@ -48,7 +48,7 @@ def process_question(question_ID):
         ws[ScoreCellID] = scores_dict[criterion]['score']
         ws[ReasoningCellID] = scores_dict[criterion]['reasoning']
     # Save the scores
-    
+    ws['R' + str(question_ID)] = vector
 
     # Save in history file
     response_message_html = markdown.markdown(response_message)
@@ -66,8 +66,7 @@ import queue
 
 start_ID = 1
 end_ID = 263
-
-
+ids = [14,15,17,19,20,23,24,25,26,43,47,49,60,66,68,70,71,75,77,79,80,81,82,83,84,86,88,89,91,92,93,94,96,99,100,102,104,106,107,108,109,110,111,112,113,116,117,118,119,120,121,134,138,144,145,151,163,165,166,167,169,172,173,174,175,176,177,179,180,182,183,184,188,190,195,196,197,198,200,201,203,204,214,215,217,219,222,247,252,254,258,259,260]
 def worker(q):
     while not q.empty():
         question_ID = q.get()
@@ -79,7 +78,7 @@ def worker(q):
 
 # Create a queue and populate it with question IDs
 q = queue.Queue()
-for question_ID in range(start_ID, end_ID + 1):
+for question_ID in range(start_ID,end_ID):
     q.put(question_ID)
 
 # Create and start threads
