@@ -6,59 +6,64 @@
 }
 
 body {
-    background-color: #f4f4f9;
-    color: #333;
+    background-color: #ced4da; /* Light gray background */
+    color: #212529; /* Dark gray text color */
 }
 
 nav {
-    background-color: #45a09d;
-    color: white;
+    background-color: #343a40; /* Dark slate gray for nav */
+    color: #f8f9fa; /* Light text color */
     padding: 1em;
     text-align: center;
 }
 
 h1 {
     margin: 0;
+    color: #212529; /* Dark gray text */
 }
 
 .panel {
     padding: 1em;
     margin: 1em;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #b1b7bc; /* Soft gray background */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     border-radius: 8px;
+    color: #212529; /* Dark gray text */
 }
 
 #chatbox, #explanation, #historybox {
-    border: 1px solid #ddd;
+    border: 1px solid #adb5bd; /* Medium gray border */
     padding: 1em;
-    height: 500px; /* Increased height */
+    height: 500px; /* Retained height */
     overflow-y: auto;
     margin-bottom: 1em;
     border-radius: 8px;
-    background-color: #fff;
+    background-color: #e9ecef; /* Light gray background */
+    color: #495057; /* Medium-dark gray text */
 }
 
 input[type="text"] {
     width: calc(100% - 60px);
     padding: 0.5em;
     margin-right: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #adb5bd; /* Medium gray border */
     border-radius: 4px;
+    background-color: #dee2e6; /* Light gray input background */
+    color: #495057; /* Medium-dark gray text */
 }
 
 button {
     padding: 0.5em 1em;
     border: none;
-    background-color: #45a09d;
-    color: white;
+    background-color: #6c757d; /* Medium gray background */
+    color: #f8f9fa; /* Light text */
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #5a6268; /* Darker gray hover effect */
 }
 
 .circular-progress {
@@ -77,13 +82,13 @@ button:hover {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background-color: lightgrey;
+    background-color: #343a40; /* Dark slate gray */
 }
 
 .percentage {
     position: relative;
     font-size: 20px;
-    color: rgb(0, 0, 0, 0.8);
+    color: #f8f9fa; /* Light text */
 }
 
 .score-container {
@@ -94,6 +99,7 @@ button:hover {
 .score-header {
     text-align: center;
     margin-bottom: 0.5em;
+    color: #212529; /* Dark gray text */
 }
 
 .message {
@@ -103,13 +109,15 @@ button:hover {
 }
 
 .user-message {
-    background-color: #d1e7dd;
+    background-color: #3461a5; /* Bright blue for user messages */
     align-self: flex-end;
     text-align: right;
+    color: #ffffff; /* White text */
 }
 
 .bot-message {
-    background-color: #f8d7da;
+    background-color: #974b59; /* Modern purple for bot messages */
     align-self: flex-start;
     text-align: left;
+    color: #ffffff; /* White text */
 }

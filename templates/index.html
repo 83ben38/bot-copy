@@ -9,7 +9,8 @@
 </head>
 <body>
     <nav>
-        <h1>RAG Dashboard</h1>
+        <h1 style="color: #f8f9fa; letter-spacing: 2px; font-size: xx-large;">L.I.G.H.T.</h1>
+        <h2 style="font-size: small;">DEVELOPER PANEL</h2>
     </nav>
     <div class="panel">
         <div id="chatbot">
@@ -17,7 +18,7 @@
         <div id="chatbox" class="chatbox"></div>
         <div id="typingIndicator" class="message bot-message" style="display: none;">Bot is thinking...</div>
         <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
-        <button onclick="resetChat()">Reset Chat</button>
+        <button onclick="resetChat()" style="margin-top: 10px;">Reset Chat</button>
         </div>
         <div id="popup" hidden="true">
             <h2>Explanation</h2>
@@ -77,9 +78,15 @@
         <button onclick="buttonClick(1)">Auto Generate A Question</button>
         <button onclick="buttonClick(2)">Copy Response to Clipboard</button>
         <button onclick="buttonClick(3)">View History</button>
-        <button onclick="buttonClick(4)">Force Chart Update</button>
     </div>
-    <canvas id="scoreChart" width="400" height="200"></canvas>
+    <canvas id="scoreChart" width="400" height="200" class="panel"></canvas>
+    <div class="panel">
+        <div style="text-align: center;">
+            <button style="text-align: center;" id="liveDataBtn">Show Live Data</button>
+            <button style="text-align: center;" id="testingDataBtn">Show Testing Data</button>
+        </div>
+        <canvas id="averageRadarChart" width="400" height="400" ></canvas>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ url_for('static', filename='scripts.js') }}"></script>
 </body>

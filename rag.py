@@ -3,6 +3,7 @@ from openai import OpenAI
 from qdrant_client import QdrantClient  # Import QdrantClient
 import ast
 import json  # Import json module
+from flask import jsonify  # Import jsonify from flask
 from config.scoringconfig import SCORING_WEIGHTS, SCORING_SCALE, SCORING_CRITERIA;
 
 data = open("key.txt",'r').read()
@@ -76,6 +77,7 @@ def score_material(scoringmaterial, context, data):
         }
         score_values.append(int(score_response[0]))
     scoreJSON(score_values)
+    compute_live_average()
     return scores
     
 
@@ -126,3 +128,36 @@ def scoreJSON(new_scores, file_path="static/history/scorehistory.json"):
     # Save the updated data back to the file
     with open(file_path, 'w') as file:
         json.dump(data, file, indent=4)
+
+
+def compute_live_average():
+    try:
+        # Load the score history from scorehistory.json
+        with open('static/history/scorehistory.json', 'r') as f:
+            score_history = json.load(f)
+        
+        if not isinstance(score_history, list) or len(score_history) == 0:
+            return jsonify({"error": "Score history is empty or invalid"}), 400
+
+        # Calculate averages for each score index
+        num_metrics = len(score_history[0]['scores'])
+        sums = [0] * num_metrics
+        count = len(score_history)
+
+        for entry in score_history:
+            for i, score in enumerate(entry['scores']):
+                sums[i] += score
+
+        averages = [round(total / count, 2) for total in sums]
+
+        # Save the averages to liveaverage.json
+        live_average_path = 'static/history/liveaverage.json'
+        with open(live_average_path, 'w') as f:
+            json.dump({"averageScores": averages}, f)
+
+        return jsonify({
+            "message": "Live averages computed and saved successfully",
+            "averageScores": averages
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

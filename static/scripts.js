@@ -127,6 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (buttonId==4){
                 updateChartFromFile(scoreChart);
+                updateLiveAverages();
             }
             console.log(data.message);
         })
@@ -276,6 +277,25 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => console.error('Error:', error));
     }
+
+    window.updateLiveAverages = function() {
+        fetch('/compute_live_average', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Live averages updated:', data.averageScores);
+        })
+        .catch(error => console.error('Error:', error));
+    };
 });
 
 function interpolateColor(value) {
@@ -390,6 +410,7 @@ const scoreChart = new Chart(ctx, {
         datasets: [] // Initially empty
     },
     options: {
+        borderWidth: 20,
         animations: {
             tension: {
               duration: 1000,
@@ -413,3 +434,110 @@ const scoreChart = new Chart(ctx, {
 
 // Initial chart load
 updateChartFromFile(scoreChart);
+
+
+
+// Initialize chart variable
+let radarChart;
+
+// Function to fetch live data
+async function fetchLiveData() {
+    const response = await fetch('static/history/liveaverage.json');
+    const data = await response.json();
+    return data;
+}
+
+// Function to initialize or update the radar chart
+function updateRadarChart(data, labelPrefix) {
+    const ctx = document.getElementById('averageRadarChart').getContext('2d');
+    // If chart already exists, destroy it to update
+    if (radarChart) {
+        radarChart.destroy();
+    }
+
+    // Prepare datasets
+    const datasets = Array.isArray(data)
+        ? data.map((entry, index) => ({
+            label: `${labelPrefix} ${new Date(entry.timestamp).toLocaleDateString()}`,
+            data: entry.averageScores,
+            backgroundColor: `hsla(${index * 60}, 70%, 70%, 0.2)`,
+            borderColor: `hsl(${index * 60}, 70%, 50%)`,
+            borderWidth: 2
+        }))
+        : [{
+            label: labelPrefix,
+            data: data.averageScores,
+            backgroundColor: 'hsla(0, 70%, 70%, 0.2)',
+            borderColor: 'hsl(0, 70%, 50%)',
+            borderWidth: 2
+        }];
+
+    // Create the radar chart
+    radarChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['Metric 1', 'Metric 2', 'Metric 3', 'Metric 4', 'Metric 5', 'Metric 6'],
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' },
+                title: { display: true, text: 'Radar Chart' }
+            },
+            scales: {
+                r: {
+                    angleLines: { display: false },
+                    suggestedMin: 0,
+                    suggestedMax: 5
+                }
+            }
+        }
+    });
+}
+
+// Function to update the chart in live mode
+async function updateChartInLiveMode() {
+    const liveData = await fetchLiveData();
+    updateRadarChart(liveData, 'Live Data');
+}
+
+
+// Function to fetch and update data
+async function loadAndSwitchRadarChart(dataType) {
+    const filePath = dataType === 'live'
+        ? "static/history/scorehistory.json" // Live data file
+        : "static/history/averagehistory.json"; // Testing data file
+
+    try {
+        const response = await fetch(filePath + `?t=${Date.now()}`); // Cache-busting query param
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const data = await response.json();
+
+        if (dataType === 'live') {
+            // Live data is expected as an array of scores
+            const liveScores = data.map(entry => entry.scores.reduce((a, b) => a + b, 0) / entry.scores.length);
+            updateRadarChart(liveScores, "Live Data");
+            updateChartInLiveMode();
+        } else {
+            // Testing data is already structured
+            updateRadarChart(data, "Testing Data");
+        }
+    } catch (error) {
+        console.error("Failed to fetch or display data:", error);
+    }
+}
+
+// Add event listeners to the buttons
+document.getElementById('liveDataBtn').addEventListener('click', () => {
+    loadAndSwitchRadarChart('live');
+});
+
+document.getElementById('testingDataBtn').addEventListener('click', () => {
+    loadAndSwitchRadarChart('testing');
+});
+
+// Load the default chart on page load
+loadAndSwitchRadarChart('testing'); // Default to testing data
+
+
