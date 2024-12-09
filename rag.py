@@ -64,18 +64,31 @@ def get_chatgpt_response(input, history, constitution, vector):
 
 
 
+import concurrent.futures
+
+def process_criterion(scoringmaterial, context, data, criterion, description):
+    score_response = get_chatgpt_response(scoringmaterial, f"User: {context}", "you are going to be scoring another ai's work, you are to return a number, 1-5, on how well it fits this criterion (1 is a bad response and 5 is a good one):" + description + "Give your number, and then after the number have a star sign (*), then your reasoning for that score DO NOT GIVE ANY OTHER OUTPUT THAN THIS OR THE CODE RUNNING BEHIND YOU WILL BREAK AND YOU WILL GET IN TROUBLE", data)
+    score_response = score_response.split("*")
+    return criterion, {
+        'score': int(score_response[0]),
+        'reasoning': score_response[1]
+    }
+
 def score_material(scoringmaterial, context, data):
     scores = {}
     score_values = []
-    for criterion, description  in SCORING_CRITERIA.items():
-        score_response = get_chatgpt_response(scoringmaterial, f"User: {context}", "you are going to be scoring another ai's work, you are to return a number, 1-5, on how well it fits this criterion (1 is a bad response and 5 is a good one):" + description + "Give your number, and then after the number have a star sign (*), then your reasoning for that score DO NOT GIVE ANY OTHER OUTPUT THAN THIS OR THE CODE RUNNING BEHIND YOU WILL BREAK AND YOU WILL GET IN TROUBLE", data)
-        #split the scores into the number and the reasoning
-        score_response = score_response.split("*")
-        scores[criterion] = {
-            'score': int(score_response[0]),
-            'reasoning': score_response[1]
-        }
-        score_values.append(int(score_response[0]))
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        futures = []
+        for criterion, description in SCORING_CRITERIA.items():
+            print(f"Starting process for criterion: {criterion}")  # Debug statement
+            futures.append(executor.submit(process_criterion, scoringmaterial, context, data, criterion, description))
+        
+        for future in concurrent.futures.as_completed(futures):
+            criterion, result = future.result()
+            scores[criterion] = result
+            score_values.append(result['score'])
+
     scoreJSON(score_values)
     compute_live_average()
     return scores

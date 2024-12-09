@@ -476,7 +476,13 @@ function updateRadarChart(data, labelPrefix) {
     radarChart = new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: ['Metric 1', 'Metric 2', 'Metric 3', 'Metric 4', 'Metric 5', 'Metric 6'],
+            labels: [    "Compassion",    // Metric 1
+                "Accuracy",   // Metric 2
+                "Relevancy",     // Metric 3
+                "Simplicity", // Metric 4
+                "Safety",  // Metric 5
+                "Bias" // Metric 6],
+            ],
             datasets: datasets
         },
         options: {

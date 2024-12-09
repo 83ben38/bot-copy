@@ -68,6 +68,7 @@ def chat():
     global chat_history
     user_message = request.json['message']
     chat_history += f"\nUser: {user_message}"
+    print("starting prompt")
     vector = process_keywords(user_message)
     response_message = get_chatgpt_response(user_message, chat_history, get_main_bot_constitution(), vector)
     if (len(response_message) < 5):
@@ -78,7 +79,7 @@ def chat():
     # Convert Markdown to HTML
     response_message_html = markdown.markdown(response_message)
     response_message_without_enter = response_message_html.replace("\n",'`')
-    print(response_message_without_enter)
+    print("prompt finished: " + response_message_without_enter)
     global newFile
     oldFile = newFile
     global fileName
@@ -110,9 +111,11 @@ def keyword():
     return jsonify({'keywords': keywords})
 
 def process_keywords(message):
+    print("starting keyword break down")
     constitution = "Your job is to create a query that will search a database for data. You are to output sections of text that you think might be in data that contains the answer to the users question. Do not output anything else, as it will break the code running behind you, and you will get in trouble"
     response_message = get_chatgpt_response(message, "", constitution, "no data")
     vector_result = get_vector_reponse(response_message)
+    print("keyword break down finished")
     return vector_result
 
 
