@@ -71,6 +71,7 @@ def updateChatHistory():
 def chat():
     global chat_history
     user_message = request.json['message']
+    score = request.json['score']
     chat_history += f"\nUser: {user_message}"
     print("starting prompt")
     vector = process_keywords(user_message)
@@ -78,24 +79,31 @@ def chat():
     if (len(response_message) < 5):
         response_message = "I'm sorry, but I can't help with that. I can provide guidance to those who need help with harassment and information about sexual exploitation or similar topics."
     chat_history += f"\nBot: {response_message}"
-    scores = score_material(response_message,user_message,vector)
+    if (score):
+        scores = score_material(response_message,user_message,vector)
+    
 
     # Convert Markdown to HTML
     response_message_html = markdown.markdown(response_message)
-    response_message_without_enter = response_message_html.replace("\n",'`')
-    print("prompt finished: " + response_message_without_enter)
-    global newFile
-    oldFile = newFile
-    global fileName
-    newFile = open("./history/"+fileName.replace("\n","")+".txt",'a')
-    if (oldFile == ""):
-        newFile.write(fileName+"\n")
-    newFile.write(user_message+"\n"+response_message_without_enter+"\n"+str(scores)+"\n")
-    newFile.close()
-    return jsonify({
-        'response': response_message_html,
-        'scores': scores
-    })
+    if (score):
+        response_message_without_enter = response_message_html.replace("\n",'`')
+        print("prompt finished: " + response_message_without_enter)
+        global newFile
+        oldFile = newFile
+        global fileName
+        newFile = open("./history/"+fileName.replace("\n","")+".txt",'a')
+        if (oldFile == ""):
+            newFile.write(fileName+"\n")
+        newFile.write(user_message+"\n"+response_message_without_enter+"\n"+str(scores)+"\n")
+        newFile.close()
+        return jsonify({
+            'response': response_message_html,
+            'scores': scores
+        })
+    else:
+        return jsonify({
+            'response': response_message_html
+        })
 
 @app.route('/reset_chat', methods=['POST'])
 def reset_chat():

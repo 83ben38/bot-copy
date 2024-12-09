@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
-    window.handleKeyPress = function(event) {
+    window.handleKeyPress = function(event,client) {
         if (event.key === 'Enter') {
-            sendMessage();
+            sendMessage(client);
         }
     }
     var explanations;
     var lastResponse;
-    window.sendMessage = function() {
+    window.sendMessage = function(client) {
         const chatInput = document.getElementById('chatInput');
         const message = chatInput.value;
         if (message.trim() === '') return;
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ message: message })
+            body: JSON.stringify({ message: message, score: !client })
         })
         .then(response => response.json())
         .then(data => {
@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
             lastResponse = data.response;
             typeText(botMessageDiv, data.response, 1000);
             // Update score bubbles
+            if (!client){
             const scores = data.scores;
             explanations = scores;
             updateScoreBubble('chatbot-score1', scores.compassion.score);
@@ -52,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updateScoreBubble('chatbot-score4', scores.simplicity.score);
             updateScoreBubble('chatbot-score5', scores.safety.score);
             updateScoreBubble('chatbot-score6', scores.bias.score);
+            }
         })
         .catch(error => {
             console.error('Error:', error);
