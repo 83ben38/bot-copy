@@ -32,6 +32,10 @@ newFile = ""
 def index():
     return render_template('index.html')
 
+@app.route('/client')
+def client():
+    return render_template('client.html')
+
 @app.route('/button_click', methods=['POST'])
 def button_click():
     button_id = request.json['button_id']

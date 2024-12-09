@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='js/marked.min.js') }}"></script>
+</head>
+<body>
+    <nav>
+        <h1 style="color: #f8f9fa; letter-spacing: 2px; font-size: xx-large;">L.I.G.H.T.</h1>
+    </nav>
+    <div class="panel">
+        <div id="chatbot">
+        <h2>Chatbot</h2>
+        <div id="chatbox" class="chatbox"></div>
+        <div id="typingIndicator" class="message bot-message" style="display: none;">Bot is thinking...</div>
+        <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+        <button onclick="resetChat()" style="margin-top: 10px;">Reset Chat</button>
+        </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</body>
+</html>
