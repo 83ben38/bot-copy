@@ -347,13 +347,14 @@ function typeText(element, html, baseSpeed) {
     tempDiv.innerHTML = html;
     const text = tempDiv.textContent || tempDiv.innerText || '';
 
-    const speed = baseSpeed / text.length; // Adjust speed based on text length
+    const speed = (text.length/baseSpeed)+1; // Adjust speed based on text length
 
     function type() {
         if (index < text.length) {
-            element.innerHTML += text.charAt(index);
-            index++;
-            setTimeout(type, speed);
+            
+            element.innerHTML += text.substring(index,index+speed);
+            index+=speed;
+            setTimeout(type, 1);
         } else {
             element.innerHTML = html; // Set the full HTML content after typing is done
         }
