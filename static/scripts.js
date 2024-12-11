@@ -306,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function interpolateColor(value) {
-    const startColor = { r: 220, g: 20, b: 60 }; // Crimson Red
+    const startColor = { r: 151, g: 75, b: 89 }; // Crimson Red
     const endColor = { r: 34, g: 139, b: 34 }; // Forest Green
 
     const r = Math.round(startColor.r + (endColor.r - startColor.r) * (value / 5));

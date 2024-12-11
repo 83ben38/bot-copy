@@ -109,14 +109,14 @@ button:hover {
 }
 
 .user-message {
-    background-color: #3461a5; /* Bright blue for user messages */
+    background-color: #3487a5; /* Bright blue for user messages */
     align-self: flex-end;
     text-align: right;
     color: #ffffff; /* White text */
 }
 
 .bot-message {
-    background-color: #974b59; /* Modern purple for bot messages */
+    background-color: #66c1c6; /* Modern purple for bot messages */
     align-self: flex-start;
     text-align: left;
     color: #ffffff; /* White text */
