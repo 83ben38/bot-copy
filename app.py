@@ -25,7 +25,7 @@ for value in fileNames:
 
 import datetime
 global fileName
-fileName = datetime.datetime.now().strftime("%Y-%m-%d,%H:%M:%S")
+fileName = datetime.datetime.now().strftime("%Y-%m-%d,%H;%M;%S")
 global newFile
 newFile = ""
 
