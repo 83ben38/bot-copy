@@ -347,21 +347,13 @@ window.updateScoreBubble = function(bubbleId, newValue) {
 }
 
 function typeText(element, html, baseSpeed) {
-    let index = 0;
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = html;
-    const text = tempDiv.textContent || tempDiv.innerText || '';
-
-    const speed = (text.length/baseSpeed)+1; // Adjust speed based on text length
-
+    let i = 0;
+    const speed= (html.length/baseSpeed)+1;
     function type() {
-        if (index < text.length) {
-            
-            element.innerHTML += text.substring(index,index+speed);
-            index+=speed;
+        if (i < html.length) {
+            element.innerHTML = marked.parse(html.substring(0, i + speed));
+            i+=speed;
             setTimeout(type, 1);
-        } else {
-            element.innerHTML = html; // Set the full HTML content after typing is done
         }
     }
     type();
