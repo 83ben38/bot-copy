@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <script src="{{ url_for('static', filename='js/marked.min.js') }}"></script>
 </head>
-<body>
+<body onload="resetChat()">
     <nav>
         <h1 style="color: #f8f9fa; letter-spacing: 2px; font-size: xx-large;">L.I.G.H.T.</h1>
         <h2 style="font-size: small;">DEVELOPER PANEL</h2>
@@ -15,7 +15,8 @@
     <div class="panel">
         <div id="chatbot">
         <h2>Chatbot</h2>
-        <div id="chatbox" class="chatbox"></div>
+        <div id="chatbox" class="chatbox" >
+        </div>
         <div id="typingIndicator" class="message bot-message" style="display: none;">Bot is thinking...</div>
         <input type="text" id="chatInput" placeholder="Type a message..." onkeypress="handleKeyPress(event,false)">
         <button onclick="resetChat()" style="margin-top: 10px;">Reset Chat</button>

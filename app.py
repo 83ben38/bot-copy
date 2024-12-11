@@ -5,7 +5,7 @@ import json
 import markdown
 import random
 app = Flask(__name__)
-chat_history = ""
+chat_history = "Bot: Hi there! How can I assist you today?"
 
 from os import listdir
 fileNames = listdir("./history")
@@ -108,7 +108,7 @@ def chat():
 @app.route('/reset_chat', methods=['POST'])
 def reset_chat():
     global chat_history
-    chat_history = ""
+    chat_history = "Bot: Hi there! How can I assist you today?"
     global fileName
     fileName = datetime.datetime.now().strftime("%Y-%M-%d,%H:%M:%S")
     global newFile

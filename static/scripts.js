@@ -235,6 +235,11 @@ document.addEventListener('DOMContentLoaded', function() {
     window.resetChat = function() {
         const chatbox = document.getElementById('chatbox');
         chatbox.innerHTML = '';
+        const botMessageDiv = document.createElement('div');
+        botMessageDiv.className = 'message bot-message';
+        chatbox.appendChild(botMessageDiv);
+        lastResponse = "Hi there! How can I assist you today?";
+        typeText(botMessageDiv, lastResponse, 1000);
         fetch('/reset_chat', {
             method: 'POST',
             headers: {
@@ -437,7 +442,6 @@ const scoreChart = new Chart(ctx, {
 
 // Initial chart load
 updateChartFromFile(scoreChart);
-
 
 
 // Initialize chart variable
