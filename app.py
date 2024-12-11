@@ -1,9 +1,10 @@
 from rag import get_chatgpt_response
-from rag import get_vector_reponse, get_main_bot_constitution, score_material
+from rag import get_vector_reponse, get_main_bot_constitution, score_material, toString
 from flask import Flask, render_template, request, jsonify
 import json
 import markdown
 import random
+
 app = Flask(__name__)
 chat_history = "Bot: Hi there! How can I assist you today?"
 
@@ -75,12 +76,20 @@ def chat():
     chat_history += f"\nUser: {user_message}"
     print("starting prompt")
     vector = process_keywords(user_message)
-    response_message = get_chatgpt_response(user_message, chat_history, get_main_bot_constitution(), vector)
+    vector_string = toString(vector)
+
+    websites = []
+
+    for item in vector:
+        print(item.payload['website'])
+        websites.append(item.payload['website'])
+
+    response_message = get_chatgpt_response(user_message, chat_history, get_main_bot_constitution(), vector_string)
     if (len(response_message) < 5):
         response_message = "I'm sorry, but I can't help with that. I can provide guidance to those who need help with harassment and information about sexual exploitation or similar topics."
     chat_history += f"\nBot: {response_message}"
     if (score):
-        scores = score_material(response_message,user_message,vector)
+        scores = score_material(response_message,user_message,vector_string)
     
 
     # Convert Markdown to HTML
@@ -102,7 +111,8 @@ def chat():
         })
     else:
         return jsonify({
-            'response': response_message_html
+            'response': response_message_html,
+            'websites': websites
         })
 
 @app.route('/reset_chat', methods=['POST'])
@@ -127,6 +137,9 @@ def process_keywords(message):
     constitution = "Your job is to create a query that will search a database for data. You are to output sections of text that you think might be in data that contains the answer to the users question. Do not output anything else, as it will break the code running behind you, and you will get in trouble"
     response_message = get_chatgpt_response(message, "", constitution, "no data")
     vector_result = get_vector_reponse(response_message)
+
+
+
     print("keyword break down finished")
     return vector_result
 

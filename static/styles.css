@@ -121,3 +121,7 @@ button:hover {
     text-align: left;
     color: #ffffff; /* White text */
 }
+
+.message ol{
+    padding-left: 20px;
+}

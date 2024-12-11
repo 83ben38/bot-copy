@@ -121,9 +121,9 @@ def get_vector_reponse(input):
         query_vector=vector,
         limit=5
     )
-
+ 
     
-    return toString(result)
+    return result
 
 def toString(vector):
     string = ""
