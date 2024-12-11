@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Simulate typing effect
             lastResponse = data.response;
-            typeText(botMessageDiv, data.response, 1000);
+            typeText(botMessageDiv, data.response, 1000,chatbox);
             // Update score bubbles
             if (!client){
             const scores = data.scores;
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
                     // Simulate typing effect
                     lastResponse = data.response;
-                    typeText(botMessageDiv, data.response, 1000);
+                    typeText(botMessageDiv, data.response, 1000,chatbox);
         
                     // Update score bubbles
                     const scores = data.scores;
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
         botMessageDiv.className = 'message bot-message';
         chatbox.appendChild(botMessageDiv);
         lastResponse = "Hi there! How can I assist you today?";
-        typeText(botMessageDiv, lastResponse, 1000);
+        typeText(botMessageDiv, lastResponse, 1000,chatbox);
         fetch('/reset_chat', {
             method: 'POST',
             headers: {
@@ -346,13 +346,14 @@ window.updateScoreBubble = function(bubbleId, newValue) {
     }
 }
 
-function typeText(element, html, baseSpeed) {
+function typeText(element, html, baseSpeed, insideDiv) {
     let i = 0;
     const speed= (html.length/baseSpeed)+1;
     function type() {
         if (i < html.length) {
             element.innerHTML = marked.parse(html.substring(0, i + speed));
             i+=speed;
+            insideDiv.scrollTop = insideDiv.scrollHeight
             setTimeout(type, 1);
         }
     }
