@@ -363,17 +363,19 @@ function typeText(element, html, baseSpeed, insideDiv, sources) {
                 allSourceDiv.className = 'allSourceDiv';
                 element.appendChild(allSourceDiv);
                 for (let i = 0; i < sources.length; i++) {
-                    const sourceDiv = document.createElement('button');
-                    sourceDiv.onclick = function(){window.open(sources[i], "_blank");};
-                    sourceDiv.className = 'sourceDiv';
-                    const url = sources[i];
-                
-                    var displayText = url.substring(8,url.indexOf(".",8));
-                    if (displayText == "www"){
-                        displayText = url.substring(url.indexOf(".")+1,url.indexOf(".",url.indexOf(".")+1));
+                    if (sources.indexOf(sources[i])==i){
+                        const sourceDiv = document.createElement('button');
+                        sourceDiv.onclick = function(){window.open(sources[i], "_blank");};
+                        sourceDiv.className = 'sourceDiv';
+                        const url = sources[i];
+                    
+                        var displayText = url.substring(8,url.indexOf(".",8));
+                        if (displayText == "www"){
+                            displayText = url.substring(url.indexOf(".")+1,url.indexOf(".",url.indexOf(".")+1));
+                        }
+                        sourceDiv.innerHTML = displayText;
+                        allSourceDiv.appendChild(sourceDiv);
                     }
-                    sourceDiv.innerHTML = displayText;
-                    allSourceDiv.appendChild(sourceDiv);
                 }
             }
         }
