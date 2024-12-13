@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Simulate typing effect
             lastResponse = data.response;
-            typeText(botMessageDiv, data.response, 1000,chatbox);
+            typeText(botMessageDiv, data.response, 1000,chatbox, data.websites);
             // Update score bubbles
             if (!client){
             const scores = data.scores;
@@ -103,10 +103,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     const botMessageDiv = document.createElement('div');
                     botMessageDiv.className = 'message bot-message';
                     chatbox.appendChild(botMessageDiv);
-        
+
                     // Simulate typing effect
                     lastResponse = data.response;
-                    typeText(botMessageDiv, data.response, 1000,chatbox);
+                    typeText(botMessageDiv, data.response, 1000,chatbox, data.websites);
         
                     // Update score bubbles
                     const scores = data.scores;
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
         botMessageDiv.className = 'message bot-message';
         chatbox.appendChild(botMessageDiv);
         lastResponse = "Hi there! How can I assist you today?";
-        typeText(botMessageDiv, lastResponse, 1000,chatbox);
+        typeText(botMessageDiv, lastResponse, 1000,chatbox, []);
         fetch('/reset_chat', {
             method: 'POST',
             headers: {
@@ -346,7 +346,7 @@ window.updateScoreBubble = function(bubbleId, newValue) {
     }
 }
 
-function typeText(element, html, baseSpeed, insideDiv) {
+function typeText(element, html, baseSpeed, insideDiv, sources) {
     let i = 0;
     const speed= (html.length/baseSpeed)+1;
     function type() {
@@ -356,8 +356,30 @@ function typeText(element, html, baseSpeed, insideDiv) {
             insideDiv.scrollTop = insideDiv.scrollHeight
             setTimeout(type, 1);
         }
+        else{
+            element.innerHTML = marked.parse(html);
+            if (sources.length > 0){
+                const allSourceDiv = document.createElement('div');
+                allSourceDiv.className = 'allSourceDiv';
+                element.appendChild(allSourceDiv);
+                for (let i = 0; i < sources.length; i++) {
+                    const sourceDiv = document.createElement('button');
+                    sourceDiv.onclick = function(){window.open(sources[i], "_blank");};
+                    sourceDiv.className = 'sourceDiv';
+                    const url = sources[i];
+                
+                    var displayText = url.substring(8,url.indexOf(".",8));
+                    if (displayText == "www"){
+                        displayText = url.substring(url.indexOf(".")+1,url.indexOf(".",url.indexOf(".")+1));
+                    }
+                    sourceDiv.innerHTML = displayText;
+                    allSourceDiv.appendChild(sourceDiv);
+                }
+            }
+        }
     }
     type();
+    
 }
 
 

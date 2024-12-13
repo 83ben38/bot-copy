@@ -125,3 +125,25 @@ button:hover {
 .message ol{
     padding-left: 20px;
 }
+
+
+.allSourceDiv {
+    margin-top: 0.1em;
+}
+
+.sourceDiv {
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.25); /* White background with 25% opacity */;
+    width: fit-content;
+    font-size: small;
+    transition: background-color 0.3s, transform 0.3s;
+
+
+    margin-left: 5px;
+    
+    }
+
+    .sourceDiv:hover {
+        background-color: rgba(255, 255, 255, 0.5); /* Increase opacity on hover */
+        transform: scale(1.05); /* Slightly enlarge on hover */
+}

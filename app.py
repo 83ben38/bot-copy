@@ -107,7 +107,8 @@ def chat():
         newFile.close()
         return jsonify({
             'response': response_message_html,
-            'scores': scores
+            'scores': scores,
+            'websites': websites
         })
     else:
         return jsonify({
@@ -145,5 +146,5 @@ def process_keywords(message):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False, host='0.0.0.0', port=5000)
 
